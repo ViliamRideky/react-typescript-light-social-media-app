@@ -15,6 +15,7 @@ export const Navbar = () => {
         <div className='navbar'>
             <div className='links'>
                 <Link to="/">Home</Link>
+                {user && <Link to="/create-post">Create post</Link>}
                 {user ? (
                     <button onClick={signUserOut} className="link-button">Log out</button>
                 ) : (
