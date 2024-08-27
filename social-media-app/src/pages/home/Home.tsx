@@ -1,6 +1,7 @@
 import { getDocs, collection } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { auth, db } from '../../config/firebase'
 import { useEffect, useState } from 'react'
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Format } from './Format';
 
 export interface Posts {
@@ -14,6 +15,7 @@ export interface Posts {
 export const Home = () => {
     const [postsList, setPostsList] = useState<Posts[] | null>(null)
     const postRef = collection(db, "posts")
+    const [user] = useAuthState(auth);
 
     const getPosts = async () => {
         const data = await getDocs(postRef)
@@ -27,10 +29,17 @@ export const Home = () => {
     }, [])
 
     return (
-        <div>
-            {postsList?.map((post) => (
-                <Format post={post}/>
-            ))}
+        <div className="home-container">
+            {user ? (
+                postsList?.map((post) => (
+                    <Format key={post.id} post={post} />
+                ))
+            ) : (
+                <div className="welcome-message">
+                    <h1>Welcome to Dubik</h1>
+                    <p>Please login in to view and create posts.</p>
+                </div>
+            )}
         </div>
-    )
+    );
 }
